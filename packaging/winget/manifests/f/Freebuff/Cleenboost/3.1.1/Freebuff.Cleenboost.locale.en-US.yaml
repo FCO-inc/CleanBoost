@@ -13,15 +13,17 @@ PackageUrl: https://github.com/freebuff/cleanboost
 License: MIT
 LicenseUrl: https://github.com/freebuff/cleanboost/blob/main/LICENSE
 Copyright: Copyright (c) 2024 Freebuff
-ShortDescription: Single-binary Python CLI that safely cleans system, browser and game caches on Windows + macOS.
+ShortDescription: Single-file CLI for Windows + macOS cache cleanup. Zero deps, no telemetry, MIT.
 Description: |-
-  Cleenboost is a zero-dependency Python CLI that automatically cleans system and
-  game caches on Windows and macOS. It detects orphaned temp files, browser caches,
-  build caches, Steam/Epic/Origin leftovers, and other safe-to-delete files —
-  freeing disk space safely.
+  CleanBoost is a zero-dependency Python CLI that locally cleans system, browser
+  and game caches on Windows and macOS. It detects orphaned temp files, browser
+  caches, build caches, Steam/Epic/Origin/Roblox leftovers, and other safe-to-
+  delete files — freeing disk space safely.
+  Runs 100% offline after install: no telemetry, no analytics, no remote calls.
   Ships as a single binary on each platform (PyInstaller). Includes a one-shot
-  cleaner (`cleanboost`) and a background maintenance daemon (`cleanboost-daemon`)
-  for macOS via launchd. No telemetry. MIT licensed. Zero runtime dependencies.
+  cleaner (`cleanboost`) and an explicit opt-in weekly maintenance daemon.
+  Zero runtime dependencies: only the Python standard library. MIT-licensed and
+  audited at github.com/Freebuff/cleanboost.
 Moniker: cleenboost
 Tags:
   - command-line

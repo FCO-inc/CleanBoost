@@ -6,7 +6,7 @@
 class Cleenboost < Formula
   include Language::Python::Virtualenv
 
-  desc "Fast safe system + game cache cleaner for Windows and macOS"
+  desc "Cyberpunk system & game cache cleaner for Windows and macOS. Zero deps, 100% offline, no telemetry. MIT."
   homepage "https://github.com/Freebuff/cleanboost"
   # PyPI URL must match the published package `name`: `cleenboost`.
   # Renaming the package on PyPI is NOT supported and would orphan existing

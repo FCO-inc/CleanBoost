@@ -8,7 +8,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "cleenboost"
 version = "3.1.1"
-description = "Cyberpunk terminal-only system & gaming optimizer for Windows and macOS."
+description = "Cyberpunk terminal-only system & gaming cache optimizer for Windows and macOS. Zero dependencies, zero telemetry, 100% offline."
 readme = "README.md"
 requires-python = ">=3.8"
 # PEP 639: ``text = "..."`` está deprecado en setuptools 77+. Apuntamos al

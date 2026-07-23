@@ -1,0 +1,53 @@
+{
+  "name": "cleanboost",
+  "version": "3.1.1",
+  "description": "Cyberpunk terminal-only system & gaming cache optimizer for Windows and macOS. Zero dependencies, zero telemetry, 100% offline. (Brand-canonical alias for the `cleenboost` npm package — both install names produce the same `cleanboost` binary on PATH.)",
+  "keywords": [
+    "cleanboost",
+    "cleenboost",
+    "cache",
+    "cleaner",
+    "cleanup",
+    "maintenance",
+    "utility",
+    "cli",
+    "command-line",
+    "macos",
+    "windows"
+  ],
+  "license": "MIT",
+  "author": "Freebuff",
+  "homepage": "https://github.com/Freebuff/cleanboost",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Freebuff/cleanboost.git",
+    "directory": "npm-cleanboost-stub"
+  },
+  "bugs": {
+    "url": "https://github.com/Freebuff/cleanboost/issues"
+  },
+  "os": [
+    "darwin",
+    "win32"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "cleenboost": "3.1.1"
+  },
+  "bin": {
+    "cleanboost": "./bin/cleanboost.js",
+    "cleanboost-cli": "./bin/cleanboost.js",
+    "cb": "./bin/cleanboost.js"
+  },
+  "scripts": {
+    "postinstall": "node ./scripts/postinstall.js"
+  },
+  "files": [
+    "bin/",
+    "scripts/",
+    "README.md",
+    "LICENSE"
+  ]
+}

@@ -1,0 +1,14 @@
+# Files we explicitly do NOT want to ship inside the published stub tarball.
+# Everything that gets published is enumerated in package.json `files`.
+node_modules/
+.git/
+.gitignore
+.DS_Store
+*.tgz
+*.tar.gz
+*.zip
+tests/
+__tests__/
+.cache/
+coverage/
+*.log
