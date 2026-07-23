@@ -213,7 +213,15 @@ elif [ -n "$USER_BASE" ] && [ -f "$BIN_PATH" ]; then
 else
     warn "Install succeeded but 'cleanboost' is not yet on your PATH."
     say "  Add this to your shell profile (~/.zshrc or ~/.bashrc):"
-    say "      export PATH=\"\$(python3 -m site --user-base)/bin:\$PATH\""
+    # NOTE: use USER_BASE (already evaluated earlier via $PY_BIN), NOT a raw
+    # `$(python3 -m site --user-base)` shell substitution. That would re-invoke
+    # raw python3 on macOS without Command Line Tools and re-trigger the
+    # developer-tools popup we already neutralized in STEP 2.
+    if [ -n "$USER_BASE" ]; then
+        say "      export PATH=\"${USER_BASE}/bin:\$PATH\""
+    else
+        say "      export PATH=\"\$HOME/.local/bin:\$PATH\""
+    fi
     say "  Then open a new Terminal window and run: cleanboost --version"
     exit 0
 fi
