@@ -54,7 +54,7 @@ set -euo pipefail
 APP_NAME="CLEANBOOST"
 VERSION="3.1.1"
 TARGET_ARCH="universal2"  # macOS universal2: Intel x86_64 + Apple Silicon arm64
-BUNDLE_ID="com.cyberpunk.cleanboost"
+BUNDLE_ID="com.fco.cleanboost"
 DMG_NAME="${APP_NAME}_v${VERSION}_${TARGET_ARCH}.dmg"
 PY_VER="3.11"
 
