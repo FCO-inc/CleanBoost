@@ -91,27 +91,88 @@ echo ""
 # CleanBoost needs Python 3.8 or newer (works with 3.8, 3.9, 3.10, 3.11, 3.12, 3.13).
 # CleanBoost has ZERO external dependencies — only the Python standard library.
 # ============================================================================
-echo "${BOLD}─── STEP 2 of 5: Verify Python 3.8 or newer is installed ───${RESET}"
-echo "  CleanBoost needs Python 3.8 or newer."
-echo "  CleanBoost has ZERO external dependencies — only Python standard library."
+echo "${BOLD}─── STEP 2 of 5: Verify Python 3.8+ (or auto-bootstrap) ───${RESET}"
+echo "  CleanBoost needs Python 3.8 or newer. CleanBoost has ZERO external"
+echo "  dependencies — only Python standard library."
+echo "  If you don't have Python we'll auto-fetch a portable ~15 MB copy to"
+echo "  ~/.cache/cleanboost/python/ from python-build-standalone (astral-sh)."
 echo ""
 
+# First, try native python3 or python (only accept >=3.8)
+PY_BIN=""
 if command -v python3 >/dev/null 2>&1; then
-    PY_BIN="python3"
-elif command -v python >/dev/null 2>&1; then
-    PY_BIN="python"
-else
-    echo "${RED}  ✗ Python is not installed.${RESET}"
-    echo "  Please install Python 3.8+ from https://www.python.org/downloads/"
-    echo "  Then re-run: curl -sSL https://raw.githubusercontent.com/FCO-inc/CleanBoost/main/install.sh | bash"
-    exit 1
+    if python3 -c "import sys; sys.exit(0 if sys.version_info >= (3,8) else 1)" 2>/dev/null; then
+        PY_BIN="python3"
+    fi
+fi
+if [ -z "$PY_BIN" ] && command -v python >/dev/null 2>&1; then
+    if python -c "import sys; sys.exit(0 if sys.version_info >= (3,8) else 1)" 2>/dev/null; then
+        PY_BIN="python"
+    fi
+fi
+
+# Fallback: bootstrap Python from python-build-standalone
+if [ -z "$PY_BIN" ]; then
+    echo "${YELLOW}  Python 3.8+ not found on this machine.${RESET}"
+    echo "${YELLOW}  Bootstrapping portable Python 3.11 from python-build-standalone (~15 MB)...${RESET}"
+    PBS_DIR="$HOME/.cache/cleanboost/python"
+    PBS_DATE="20240415"
+
+    case "$OS_RAW" in
+        Darwin)
+            case "$(uname -m)" in
+                arm64|aarch64)
+                    PBS_FILE="cpython-3.11.9+${PBS_DATE}-aarch64-apple-darwin-install_only.tar.gz"
+                    ;;
+                x86_64)
+                    PBS_FILE="cpython-3.11.9+${PBS_DATE}-x86_64-apple-darwin-install_only.tar.gz"
+                    ;;
+                *)
+                    echo "${RED}  ✗ Unsupported macOS architecture: $(uname -m)${RESET}"
+                    exit 1
+                    ;;
+            esac
+            PY_BIN="$PBS_DIR/bin/python3"
+            ;;
+        MINGW*|CYGWIN*|MSYS*|Windows_NT)
+            PBS_FILE="cpython-3.11.9+${PBS_DATE}-x86_64-pc-windows-msvc-install_only.tar.gz"
+            PY_BIN="$PBS_DIR/python.exe"
+            ;;
+        *)
+            echo "${RED}  ✗ Unsupported OS for portable Python: $OS_RAW${RESET}"
+            exit 1
+            ;;
+    esac
+    PBS_URL="https://github.com/astral-sh/python-build-standalone/releases/download/${PBS_DATE}/${PBS_FILE}"
+
+    if [ ! -x "$PY_BIN" ]; then
+        mkdir -p "$PBS_DIR"
+        echo "  → Downloading: $PBS_URL"
+        if ! curl -fsSL -o "$PBS_DIR/python.tar.gz" "$PBS_URL"; then
+            echo "${RED}  ✗ Portable Python download failed (offline?).${RESET}"
+            echo "  Please install Python 3.8+ from https://www.python.org/downloads/ then re-run this script."
+            exit 1
+        fi
+        echo "  → Extracting to $PBS_DIR/ ..."
+        if ! tar -xzf "$PBS_DIR/python.tar.gz" -C "$PBS_DIR" --strip-components=1 2>/dev/null; then
+            echo "${RED}  ✗ Extraction failed.${RESET}"
+            exit 1
+        fi
+        rm -f "$PBS_DIR/python.tar.gz"
+    fi
+
+    if [ ! -x "$PY_BIN" ]; then
+        echo "${RED}  ✗ Python binary not found at $PY_BIN after extract.${RESET}"
+        echo "  Please install Python 3.8+ manually: https://www.python.org/downloads/"
+        exit 1
+    fi
+    echo "${GREEN}  ✓ Portable Python installed at $PBS_DIR.${RESET}"
 fi
 
 PY_VERSION="$($PY_BIN --version 2>&1 | head -1)"
-echo "  → Found: ${BOLD}${PY_VERSION}${RESET}"
-
-if ! $PY_BIN -c "import sys; sys.exit(0 if sys.version_info >= (3,8) else 1)"; then
-    echo "${RED}  ✗ Python is too old. CleanBoost needs 3.8 or newer.${RESET}"
+echo "  → Found: ${BOLD}${PY_VERSION}${RESET} (binary: $PY_BIN)"
+if ! $PY_BIN -c "import sys; sys.exit(0 if sys.version_info >= (3,8) else 1)" 2>/dev/null; then
+    echo "${RED}  ✗ Python < 3.8 detected. CleanBoost needs 3.8 or newer.${RESET}"
     echo "  You have: $PY_VERSION"
     echo "  Install a newer version from https://www.python.org/downloads/"
     exit 1
