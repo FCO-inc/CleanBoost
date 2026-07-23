@@ -253,7 +253,10 @@ fi
 # If cleanboost is not on PATH, auto-append the bin directory to the shell
 # config file so the next Terminal session finds it without manual steps.
 if ! command -v cleanboost >/dev/null 2>&1; then
+    # Guard: if USER_BASE wasn't captured (unlikely but possible), use standard convention.
     PATH_DIR="${USER_BASE}/bin"
+    [ -z "$USER_BASE" ] && PATH_DIR="$HOME/.local/bin"
+
     SHELL_RC=""
     [ -f "$HOME/.zshrc" ] && SHELL_RC="$HOME/.zshrc"
     [ -f "$HOME/.bash_profile" ] && SHELL_RC="$HOME/.bash_profile"
@@ -264,6 +267,12 @@ if ! command -v cleanboost >/dev/null 2>&1; then
         echo "# Added by CleanBoost v${VERSION} installer" >> "$SHELL_RC"
         echo "export PATH=\"${PATH_DIR}:\$PATH\"" >> "$SHELL_RC"
         ok "Added ${BOLD}${PATH_DIR}${RESET} to your PATH"
+    elif [ -z "$SHELL_RC" ]; then
+        # No shell config found — show the manual PATH instruction as fallback
+        echo ""
+        echo "  Add this to your shell profile later:"
+        echo "    ${BOLD}export PATH=\"${PATH_DIR}:\$PATH\"${RESET}"
+        echo ""
     fi
 
     echo ""
