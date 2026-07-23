@@ -1,0 +1,13 @@
+PackageIdentifier: Freebuff.Cleenboost
+PackageVersion: 3.1.1
+PackageLocale: en-US
+ManifestType: installer
+ManifestVersion: 1.6.0
+Installers:
+  - Architecture: x64
+    InstallerType: portable
+    InstallerUrl: https://github.com/freebuff/cleanboost/releases/download/v3.1.1/cleanboost-3.1.1-windows-x64.zip
+    InstallerSha256: 0000000000000000000000000000000000000000000000000000000000000000
+    Commands:
+      - cleanboost
+    UpgradeBehavior: replace

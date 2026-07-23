@@ -1,0 +1,91 @@
+[build-system]
+# ``setuptools>=64`` permite ``license = {file = ...}`` (PEP 639) sin warning.
+# ``wheel`` se incluye explícito para que ``python -m build`` no tire de un
+# ``wheel`` antiguo dentro del isolated build environment.
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cleenboost"
+version = "3.1.1"
+description = "Cyberpunk terminal-only system & gaming optimizer for Windows and macOS."
+readme = "README.md"
+requires-python = ">=3.8"
+# PEP 639: ``text = "..."`` está deprecado en setuptools 77+. Apuntamos al
+# fichero LICENSE en root; convive sin warning con el classifier de License.
+license = { file = "LICENSE" }
+authors = [
+    { name = "FREE BUFF" },
+]
+keywords = ["cleaner", "optimizer", "gaming", "cache", "cli", "terminal"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Console",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: MacOS :: MacOS X",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: System :: System Shells",
+    "Topic :: Utilities",
+]
+# CERO dependencias externas: solo librería estándar.
+dependencies = []
+
+[project.urls]
+# PyPI muestra estos enlaces en la barra lateral. Si todavía no tienes repo
+# público, edita este bloque antes del primer ``twine upload``.
+"Homepage"    = "https://github.com/Freebuff/cleanboost"
+"Source Code" = "https://github.com/Freebuff/cleanboost"
+"Issues"      = "https://github.com/Freebuff/cleanboost/issues"
+"Changelog"   = "https://github.com/Freebuff/cleanboost/releases"
+
+[project.scripts]
+# Permite ``pip install cleanboost`` → usuario corre ``cleanboost`` en terminal,
+# ``cleanboost --quick`` desde wrapper .desktop o ``cleanboost --enable-daemon``
+# para activar el aviso semanal.
+#
+# PEP 621 exige identificadores en lowercase. Esto no rompe UX:
+#   * macOS APFS es case-insensitive por defecto, así que ``CleanBoost``
+#     resuelto por la shell ya matchea el binario ``cleanboost``.
+#   * En Linux/Windows la shell distingue mayúsculas; los usuarios pueden
+#     usar ``cleanboost-cli`` o el atajo corto ``cb`` como variante.
+cleanboost     = "main:main"
+cleanboost-cli = "main:main"
+cb             = "main:main"
+
+[tool.setuptools]
+# main.py y daemon.py conviven en el root; no son parte de un paquete.
+py-modules = ["main", "daemon"]
+
+[tool.setuptools.package-data]
+# El LICENSE y el README ya van por su cuenta como metadata del wheel.
+# No añadimos nada extra al .whl: los wrappers de doble-clic viven sólo
+# en el sdist (seleccionados por MANIFEST.in) y evitamos conflictivos
+# entry-points de shell/batch dentro del wheel (PEP 427/491).
+"*" = ["*.md"]
+
+
+# ============================================================================
+# NOTAS DE DISTRIBUCIÓN (no usadas por setuptools, sólo documentan)
+# ============================================================================
+# La publicación a PyPI se automatiza con scripts/publish_pypi.sh:
+#   1. ``python -m build`` produce ``dist/cleanboost-3.1.1.tar.gz`` y
+#      ``dist/cleanboost-3.1.1-py3-none-any.whl`` en isolated env.
+#   2. ``twine check dist/*`` valida el metadata del .tar.gz y .whl.
+#   3. ``twine upload --repository {testpypi|pypi} dist/*`` los sube.
+#
+# ``twine`` rechaza re-subir la misma versión (HTTP 400), así que es seguro
+# re-ejecutar el check antes de cada upload. Releases nuevos requieren bump
+# de ``version = "..."`` aquí y un tag en el repo.
+#
+# Endpoints verificados a 2025:
+#   * PyPI real  → https://pypi.org/project/cleanboost/
+#   * TestPyPI   → https://test.pypi.org/project/cleanboost/

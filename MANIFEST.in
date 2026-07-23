@@ -1,0 +1,48 @@
+# ============================================================================
+# MANIFEST.in — control what goes into the sdist (source distribution)
+# ============================================================================
+# We ship a clean source tarball that has everything an end-user needs to
+# either ``pip install`` or run ``python main.py`` after extracting. Heavy
+# native-builder artefacts (packaging/, FCO/, fco-motors/) are excluded.
+# ============================================================================
+
+# Documentation + metadata (LICENSE required for PyPI; README surfaces on the
+# project page thanks to ``readme = "README.md"`` in pyproject.toml).
+include README.md
+include LICENSE
+include pyproject.toml
+
+# The two top-level Python modules that the wheel installs. setuptools
+# already packages them via ``[tool.setuptools] py-modules``, but adding
+# them here keeps the sdist complete too (so ``python main.py`` after
+# ``tar -xzf`` still works without pip).
+include main.py
+include daemon.py
+
+# Double-click wrappers distributed via the sdist so users on macOS/Linux/
+# Windows can drop them onto Desktop without cloning the repo. Each tier is
+# gated by README, so missing one is fine.
+include scripts/cleanboost.command
+include scripts/cleanboost.bat
+include scripts/cleanboost.desktop
+include scripts/cleanboost.launchd.plist.template
+
+# Excluded paths ----------------------------------------------------------
+# Unrelated web apps in this repo (FCO, fco-motors) inflate the sdist for
+# no PyPI benefit.
+exclude FCO/*
+exclude fco-motors/*
+
+# PyInstaller-only build scripts (universal2 dmg / Windows exe). They are
+# documented in README but not strictly needed by ``pip install`` users.
+exclude packaging/build_dmg.sh
+exclude packaging/build_windows.bat
+exclude packaging/make_icon.py
+
+# Build artefacts.
+global-exclude __pycache__
+global-exclude *.pyc
+global-exclude *.pyo
+global-exclude *.egg-info
+global-exclude .DS_Store
+global-exclude *.log

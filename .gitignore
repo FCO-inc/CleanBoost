@@ -1,0 +1,56 @@
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+*.pyc
+
+# Packaging artifacts (locales)
+packaging/build/
+packaging/build_npm/
+_Pkg/
+*.tar.gz
+*.dmg
+*.app
+*.exe
+*.zip
+*.spec
+pkglist.txt
+
+# Editors / OS
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+
+# Node
+npm-cli/node_modules/
+npm-cli/.npm
+npm-cli/dist/
+
+# Tests
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.cache
+
+# Env
+.env
+.env.local
+.envrc

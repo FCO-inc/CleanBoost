@@ -1,0 +1,47 @@
+{
+  "name": "cleenboost",
+  "version": "3.1.1",
+  "description": "Fast safe system + game cache cleaner for Windows and macOS. Free, zero telemetry. Single prebuilt binary (~50 MB). On macOS/Windows the shell resolves case-insensitively, so `cleanboost`, `CleanBoost`, `CLEANBOOST` all work.",
+  "keywords": [
+    "cache",
+    "cleaner",
+    "cleanup",
+    "maintenance",
+    "utility",
+    "cli",
+    "command-line",
+    "macos",
+    "windows"
+  ],
+  "license": "MIT",
+  "author": "Freebuff",
+  "homepage": "https://github.com/Freebuff/cleanboost",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Freebuff/cleanboost.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Freebuff/cleanboost/issues"
+  },
+  "os": [
+    "darwin",
+    "win32"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "bin": {
+    "cleanboost": "./bin/cleanboost.js",
+    "cleanboost-cli": "./bin/cleanboost.js",
+    "cb": "./bin/cleanboost.js"
+  },
+  "scripts": {
+    "postinstall": "node ./scripts/install.js",
+    "uninstall": "node ./scripts/uninstall.js"
+  },
+  "files": [
+    "bin/",
+    "scripts/",
+    "README.md"
+  ]
+}

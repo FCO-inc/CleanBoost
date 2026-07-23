@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=CleanBoost
+GenericName=System & Gaming Optimizer
+Comment=Abre el menú 3 botones del optimizador cyberpunk.
+Exec=cleanboost
+Terminal=true
+Categories=Utility;System;Game;
+Icon=utilities-system-monitor
+Keywords=cleaner;optimizer;cache;gaming;
+StartupNotify=false

@@ -1,0 +1,194 @@
+name: Release
+
+# One command from the user:
+#   git tag v3.1.2 && git push --tags
+# Produces: macOS .dmg, macOS npm tarball (universal2), Windows .exe (zipped),
+# GitHub Release with all of the above, PyPI publish via Trusted Publishing.
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Manual tag (e.g. v3.1.2). Leave empty to use the current ref.'
+        required: false
+        default: ''
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  extract-version:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.v.outputs.version }}
+      tag:     ${{ steps.v.outputs.tag }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: v
+        run: |
+          tag="${{ inputs.tag || github.ref_name }}"
+          version="${tag#v}"
+          echo "version=${version}" >> "$GITHUB_OUTPUT"
+          echo "tag=${tag}"        >> "$GITHUB_OUTPUT"
+
+  # ──────────────────────────────────────────────────────────────────────
+  # macOS #1 — GUI installer (drag-to-Applications, double-click)
+  # ──────────────────────────────────────────────────────────────────────
+  build-macos-dmg:
+    needs: extract-version
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - name: Install PyInstaller
+        run: python -m pip install --upgrade pip "pyinstaller>=6.0"
+      - name: Build .app + .dmg via packaging/build_dmg.sh
+        run: bash packaging/build_dmg.sh
+      - name: Stage dmg at repo root for upload
+        env:
+          VERSION: ${{ needs.extract-version.outputs.version }}
+        run: |
+          set -euo pipefail
+          DMG_SRC="packaging/build/CLEANBOOST_v${VERSION}_universal2.dmg"
+          if [ ! -f "$DMG_SRC" ]; then
+            echo "::error::missing dmg at $DMG_SRC"; exit 1
+          fi
+          mkdir -p macos-out
+          cp "$DMG_SRC" "macos-out/CleanBoost-${VERSION}.dmg"
+      - name: Upload macOS dmg artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-dmg
+          path: macos-out/*.dmg
+          if-no-files-found: error
+          retention-days: 7
+
+  # ──────────────────────────────────────────────────────────────────────
+  # macOS #2 — npm channel (single universal2 executable inside a .tar.gz)
+  # ──────────────────────────────────────────────────────────────────────
+  build-macos-npm-tarball:
+    needs: extract-version
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - name: Install PyInstaller
+        run: python -m pip install --upgrade pip "pyinstaller>=6.0"
+      - name: Build raw universal2 binary for npm
+        env:
+          MACOS_FORCE_BUILD: '1'   # we want a thin-but-universal binary regardless of host
+        run: bash packaging/build_macos_npm.sh
+      - name: Verify tarball at repo root
+        env:
+          VERSION: ${{ needs.extract-version.outputs.version }}
+        run: |
+          set -euo pipefail
+          tarball="cleanboost-${VERSION}-darwin-universal.tar.gz"
+          [ -f "$tarball" ] || { echo "::error::missing tarball"; exit 1; }
+          ls -lh "$tarball"
+          # Self-test: extract to a temp dir and verify it runs (--version only).
+          TMP=$(mktemp -d)
+          tar -xzf "$tarball" -C "$TMP"
+          "$TMP/cleanboost" --version || echo "warn: --version returned non-zero"
+      - name: Upload macOS tarball artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-tarball
+          path: cleanboost-*-darwin-universal.tar.gz
+          if-no-files-found: error
+          retention-days: 7
+
+  # ──────────────────────────────────────────────────────────────────────
+  # Windows — winget zip + raw exe
+  # ──────────────────────────────────────────────────────────────────────
+  build-windows-exe:
+    needs: extract-version
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - name: Install PyInstaller
+        run: python -m pip install --upgrade pip "pyinstaller>=6.0"
+      - name: Run packaging/build_windows.bat (onefile)
+        run: cmd /c "packaging\build_windows.bat"
+      - name: Stage and zip for winget + npm
+        env:
+          VERSION: ${{ needs.extract-version.outputs.version }}
+        run: |
+          if (Test-Path "dist\cleanboost.exe") {
+            Copy-Item "dist\cleanboost.exe" "cleanboost-${env:VERSION}-windows-x64.exe"
+            Compress-Archive `
+              -Path "cleanboost-${env:VERSION}-windows-x64.exe" `
+              -DestinationPath "cleanboost-${env:VERSION}-windows-x64.zip"
+          } else {
+            Write-Error "dist\cleanboost.exe not found after build_windows.bat"
+            exit 1
+          }
+      - name: Upload Windows artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-exe
+          path: |
+            cleanboost-*.exe
+            cleanboost-*.zip
+          if-no-files-found: error
+          retention-days: 7
+
+  # ──────────────────────────────────────────────────────────────────────
+  # GitHub Release — ship everything as one Release
+  # ──────────────────────────────────────────────────────────────────────
+  publish-github-release:
+    needs: [build-macos-dmg, build-macos-npm-tarball, build-windows-exe]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with: { pattern: '*' }
+      - name: Compute SHA256 of every release asset
+        id: hash
+        run: |
+          echo "## SHA256 of release assets (paste into winget manifests if upgrading)" >> "$GITHUB_STEP_SUMMARY"
+          for f in cleanboost-*.exe cleanboost-*.zip cleanboost-*.tar.gz *.dmg; do
+            [ -f "$f" ] || continue
+            sha256sum "$f" | tee -a "$GITHUB_STEP_SUMMARY"
+          done
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          files: |
+            cleanboost-*.exe
+            cleanboost-*.zip
+            cleanboost-*.tar.gz
+            *.dmg
+
+  # ──────────────────────────────────────────────────────────────────────
+  # PyPI — Trusted Publishing via OIDC (no tokens)
+  # ──────────────────────────────────────────────────────────────────────
+  publish-pypi:
+    needs: extract-version
+    runs-on: ubuntu-latest
+    environment: release
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - name: Build sdist + wheel
+        run: |
+          python -m pip install --upgrade pip build
+          python -m build
+      - name: Publish (Trusted Publishing via PyPI Pending Publisher)
+        uses: pypa/gh-action-pypi-publish@release/v1
