@@ -63,16 +63,19 @@ __version__ = "3.1.2"
 
 
 # ============================================================================
-# I18N — strings traducibles (EN/ES).
-# La arquitectura es minimalista: un dict inline, una función ``t()`` que
-# resuelve la cadena actual y ``get_locale()`` que decide el idioma con
-# este orden de precedencia:
-#   1. Flag CLI ``--lang=en|es`` (override explícito, gana siempre).
-#   2. Variables de entorno en orden: LC_ALL > LC_MESSAGES > LANG.
-#   3. ``locale.getlocale()`` de stdlib (lo que el sistema reporta).
+# I18N — translatable strings (EN/ES).
+# Minimalist architecture: an inline dict, a ``t()`` function that resolves
+# the current string, and ``get_locale()`` that decides the language with
+# this order of precedence:
+#   1. CLI flag ``--lang=en|es`` (explicit override, always wins).
+#   2. Environment variables in order: LC_ALL > LC_MESSAGES > LANG.
+#   3. ``locale.getlocale()`` from stdlib (what the system reports).
 #   4. Default ``"en"``.
-# El banner ASCII art (CLEANBOOST dibujado) no se traduce porque es brand. El
-# subtítulo del banner queda en EN por la misma razón: identidad visual fija.
+# The ASCII art banner is not translated because it is brand identity. The
+# banner subtitle remains in EN for the same reason: fixed visual identity.
+# The Spanish dict below is kept for Spanish-locale systems: if the user's
+# Mac has Spanish locale, ``cleanboost --lang=es`` (or auto-detect) shows
+# Spanish UI. English remains the canonical default.
 # ============================================================================
 _STRINGS: dict = {
     "en": {
