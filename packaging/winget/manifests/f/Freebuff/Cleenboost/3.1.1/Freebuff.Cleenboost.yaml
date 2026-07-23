@@ -2,7 +2,7 @@ PackageIdentifier: Freebuff.Cleenboost
 PackageVersion: 3.1.1
 PackageLocale: en-US
 Publisher: Freebuff
-PackageName: Cleenboost
+PackageName: CleanBoost
 License: MIT
 ShortDescription: Single-binary Python CLI that safely cleans system, browser and game caches on Windows + macOS.
 Moniker: cleenboost

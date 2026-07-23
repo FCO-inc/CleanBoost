@@ -26,17 +26,20 @@ Sin dependencias externas. Sin telemetría. Sin hosting.
 ### Vía `pip` (recomendada)
 
 ```bash
-python3 -m pip install --user cleanboost
-cleanboost --version     # → cleanboost 3.1.1
-cleanboost               # menú interactivo 3 botones
-cleanboost --quick       # ejecuta AMBAS sin prompts (cron-friendly)
-cleanboost --lang=en|es  # fuerza idioma independientemente del locale
+python3 -m pip install --user cleenboost    # paquete PyPI = cleenboost
+cleanboost --version                        # → cleanboost 3.1.1
+cleanboost                                  # menú interactivo 3 botones
+cleanboost --quick                          # ejecuta AMBAS sin prompts (cron-friendly)
+cleanboost --lang=en|es                     # fuerza idioma independientemente del locale
 ```
 
-> El paquete PyPI se llama `cleenboost` (identidad legacy preservada para
+> El **paquete PyPI** se llama `cleenboost` (identidad legacy preservada para
 > que `pip install --upgrade cleenboost` siga funcionando en instalaciones
-> existentes). El binario entry-point y el nombre del comando siguen siendo
-> `cleanboost` por convención PEP 621 (lowercase).
+> existentes). El **binario entry-point** y el **comando** que el usuario
+> ejecuta son `cleanboost` por convención PEP 621 (lowercase). Tras
+> `pip install`, `which cleanboost` debe resolver
+> `~/​.local/bin/cleanboost` (macOS/Linux) o
+> `%AppData%\Roaming\Python\Python3X\Scripts\cleanboost.exe` (Windows).
 
 > Si tu shell no tiene `~/.local/bin` en PATH, añade antes
 > `export PATH="$HOME/.local/bin:$PATH"` a `~/.zshrc` o `~/.bashrc`.
