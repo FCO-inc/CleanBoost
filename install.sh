@@ -80,13 +80,36 @@ esac
 # ============================================================================
 say "Looking for Python 3.8+..."
 
+# ============================================================================
+# On macOS without Command Line Tools installed, /usr/bin/python3 is a tiny
+# Apple-supplied stub (a handful of bytes of shell-script text) that TRIGGERS
+# the macOS "python3 requires installing the developer tools" popup the
+# moment we invoke it. Detect that stub here by file size and skip STRAIGHT
+# to the portable-Python bootstrap path, so non-technical users never see
+# the developer-tools dialog.
+# ============================================================================
+is_real_python_bin() {
+    local binpath
+    binpath=$(command -v "$1" 2>/dev/null) || return 1
+    [ -x "$binpath" ] || return 1
+    if [[ "$OS_RAW" == "Darwin" ]]; then
+        # Real CPython on macOS: ~2-7 MB Mach-O binary.
+        # Apple CLT stub: < 1 KB text/shell script.
+        local size
+        size=$(wc -c < "$binpath" 2>/dev/null || echo 0)
+        # Threshold 100 KB: comfortably below any real Python, far above any stub.
+        [ "$size" -gt 100000 ] || return 1
+    fi
+    return 0
+}
+
 PY_BIN=""
-if command -v python3 >/dev/null 2>&1; then
+if command -v python3 >/dev/null 2>&1 && is_real_python_bin python3; then
     if python3 -c "import sys; sys.exit(0 if sys.version_info >= (3,8) else 1)" 2>/dev/null; then
         PY_BIN="python3"
     fi
 fi
-if [ -z "$PY_BIN" ] && command -v python >/dev/null 2>&1; then
+if [ -z "$PY_BIN" ] && command -v python >/dev/null 2>&1 && is_real_python_bin python; then
     if python -c "import sys; sys.exit(0 if sys.version_info >= (3,8) else 1)" 2>/dev/null; then
         PY_BIN="python"
     fi
