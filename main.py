@@ -72,7 +72,7 @@ __version__ = "3.1.2"
 #   3. ``locale.getlocale()`` de stdlib (lo que el sistema reporta).
 #   4. Default ``"en"``.
 # El banner ASCII art (CLEANBOOST dibujado) no se traduce porque es brand. El
-# subtítulo del banner queda en EN por la misma razón: look Cyberpunk fijo.
+# subtítulo del banner queda en EN por la misma razón: identidad visual fija.
 # ============================================================================
 _STRINGS: dict = {
     "en": {
