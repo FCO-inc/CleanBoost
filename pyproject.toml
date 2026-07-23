@@ -77,8 +77,11 @@ py-modules = ["main", "daemon"]
 # NOTAS DE DISTRIBUCIÓN (no usadas por setuptools, sólo documentan)
 # ============================================================================
 # La publicación a PyPI se automatiza con scripts/publish_pypi.sh:
-#   1. ``python -m build`` produce ``dist/cleanboost-3.1.1.tar.gz`` y
-#      ``dist/cleanboost-3.1.1-py3-none-any.whl`` en isolated env.
+#   1. ``python -m build`` produce ``dist/cleenboost-3.1.1.tar.gz`` y
+#      ``dist/cleenboost-3.1.1-py3-none-any.whl`` en isolated env.
+#      (``cleenboost-*`` porque ``name = "cleenboost"`` arriba; setuptools
+#       usa el nombre del paquete para derivar el basename del tarball.
+#       El CLI entrypoint sigue siendo ``cleanboost`` por convención PEP 621.)
 #   2. ``twine check dist/*`` valida el metadata del .tar.gz y .whl.
 #   3. ``twine upload --repository {testpypi|pypi} dist/*`` los sube.
 #
@@ -87,5 +90,5 @@ py-modules = ["main", "daemon"]
 # de ``version = "..."`` aquí y un tag en el repo.
 #
 # Endpoints verificados a 2025:
-#   * PyPI real  → https://pypi.org/project/cleanboost/
-#   * TestPyPI   → https://test.pypi.org/project/cleanboost/
+#   * PyPI real  → https://pypi.org/project/cleenboost/
+#   * TestPyPI   → https://test.pypi.org/project/cleenboost/

@@ -3,12 +3,16 @@
 
 # CleanBoost installs a zero-dependency Python CLI that safely cleans
 # system, browser and game caches on Windows and macOS.
-class Cleanboost < Formula
+class Cleenboost < Formula
   include Language::Python::Virtualenv
 
   desc "Fast safe system + game cache cleaner for Windows and macOS"
   homepage "https://github.com/Freebuff/cleanboost"
-  url "https://files.pythonhosted.org/packages/source/c/cleanboost/cleanboost-3.1.1.tar.gz"
+  # PyPI URL must match the published package `name`: `cleenboost`.
+  # Renaming the package on PyPI is NOT supported and would orphan existing
+  # installs — so the formula (also named cleenboost.rb for the same reason)
+  # continues to point at the existing `cleenboost` PyPI artifact.
+  url "https://files.pythonhosted.org/packages/source/c/cleenboost/cleenboost-3.1.1.tar.gz"
   sha256 "ab3a97fe73a5910f42e86602b7acb154de9a30723a8415f4687da9344fcf106c"
   license "MIT"
 
