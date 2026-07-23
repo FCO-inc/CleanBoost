@@ -25,7 +25,7 @@ Linux is **explicitly excluded** (matches the project's README).
 
 1. Detects your OS + arch.
 2. Downloads `cleanboost-<version>-{darwin-universal|windows-x64|windows-arm64}.{tar.gz|zip}`
-   from `https://github.com/Freebuff/cleanboost/releases`.
+   from `https://github.com/FCO-inc/CleanBoost/releases`.
 3. Extracts it to `~/.cleanboost/bin/cleanboost{,.exe}`.
 4. `chmod 755` on macOS.
 
@@ -36,7 +36,7 @@ the download. To force re-download, `rm -rf ~/.cleanboost` and reinstall.
 
 If you don't want to use npm, grab the same archive directly:
 
-- macOS: <https://github.com/Freebuff/cleanboost/releases/latest>
+- macOS: <https://github.com/FCO-inc/CleanBoost/releases/latest>
 - Windows: same URL, pick `.exe.zip`
 
 ## Custom install location

@@ -28,7 +28,7 @@ git push --tags
 **Option B — Build locally on a Windows machine:**
 
 ```cmd
-git clone https://github.com/Freebuff/cleanboost.git
+git clone https://github.com/FCO-inc/CleanBoost.git
 cd cleanboost
 git checkout v3.1.1
 pip install pyinstaller
@@ -42,7 +42,7 @@ packaging\build_windows.bat
 After the Release is published:
 
 ```bash
-curl -sSL -L https://github.com/Freebuff/cleanboost/releases/download/v3.1.1/cleanboost-3.1.1-windows-x64.zip \
+curl -sSL -L https://github.com/FCO-inc/CleanBoost/releases/download/v3.1.1/cleanboost-3.1.1-windows-x64.zip \
   | shasum -a 256
 ```
 

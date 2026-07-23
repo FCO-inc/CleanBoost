@@ -1,6 +1,6 @@
 {
-  "name": "cleenboost",
-  "version": "3.1.1",
+  "name": "cleanboost",
+  "version": "3.1.2",
   "description": "Fast safe system + game cache cleaner for Windows and macOS. Free, zero telemetry. Single prebuilt binary (~50 MB). On macOS/Windows the shell resolves case-insensitively, so `cleanboost`, `CleanBoost`, `CLEANBOOST` all work.",
   "keywords": [
     "cache",
@@ -15,13 +15,13 @@
   ],
   "license": "MIT",
   "author": "Freebuff",
-  "homepage": "https://github.com/Freebuff/cleanboost",
+  "homepage": "https://github.com/FCO-inc/CleanBoost",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Freebuff/cleanboost.git"
+    "url": "git+https://github.com/FCO-inc/CleanBoost.git"
   },
   "bugs": {
-    "url": "https://github.com/Freebuff/cleanboost/issues"
+    "url": "https://github.com/FCO-inc/CleanBoost/issues"
   },
   "os": [
     "darwin",

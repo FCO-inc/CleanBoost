@@ -6,9 +6,9 @@ requires = ["setuptools>=64", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "cleenboost"
-version = "3.1.1"
-description = "Cyberpunk terminal-only system & gaming cache optimizer for Windows and macOS. Zero dependencies, zero telemetry, 100% offline."
+name = "cleanboost"
+version = "3.1.2"
+description = "CleanBoost is fast, simple, 100% free terminal software that optimizes your system and detects games."
 readme = "README.md"
 requires-python = ">=3.8"
 # PEP 639: ``text = "..."`` está deprecado en setuptools 77+. Apuntamos al
@@ -42,10 +42,10 @@ dependencies = []
 [project.urls]
 # PyPI muestra estos enlaces en la barra lateral. Si todavía no tienes repo
 # público, edita este bloque antes del primer ``twine upload``.
-"Homepage"    = "https://github.com/Freebuff/cleanboost"
-"Source Code" = "https://github.com/Freebuff/cleanboost"
-"Issues"      = "https://github.com/Freebuff/cleanboost/issues"
-"Changelog"   = "https://github.com/Freebuff/cleanboost/releases"
+"Homepage"    = "https://github.com/FCO-inc/CleanBoost"
+"Source Code" = "https://github.com/FCO-inc/CleanBoost"
+"Issues"      = "https://github.com/FCO-inc/CleanBoost/issues"
+"Changelog"   = "https://github.com/FCO-inc/CleanBoost/releases"
 
 [project.scripts]
 # Permite ``pip install cleanboost`` → usuario corre ``cleanboost`` en terminal,
@@ -77,9 +77,9 @@ py-modules = ["main", "daemon"]
 # NOTAS DE DISTRIBUCIÓN (no usadas por setuptools, sólo documentan)
 # ============================================================================
 # La publicación a PyPI se automatiza con scripts/publish_pypi.sh:
-#   1. ``python -m build`` produce ``dist/cleenboost-3.1.1.tar.gz`` y
-#      ``dist/cleenboost-3.1.1-py3-none-any.whl`` en isolated env.
-#      (``cleenboost-*`` porque ``name = "cleenboost"`` arriba; setuptools
+#   1. ``python -m build`` produce ``dist/cleanboost-3.1.2.tar.gz`` y
+#      ``dist/cleanboost-3.1.2-py3-none-any.whl`` en isolated env.
+#      (``cleanboost-*`` porque ``name = "cleanboost"`` arriba; setuptools
 #       usa el nombre del paquete para derivar el basename del tarball.
 #       El CLI entrypoint sigue siendo ``cleanboost`` por convención PEP 621.)
 #   2. ``twine check dist/*`` valida el metadata del .tar.gz y .whl.
@@ -90,5 +90,5 @@ py-modules = ["main", "daemon"]
 # de ``version = "..."`` aquí y un tag en el repo.
 #
 # Endpoints verificados a 2025:
-#   * PyPI real  → https://pypi.org/project/cleenboost/
-#   * TestPyPI   → https://test.pypi.org/project/cleenboost/
+#   * PyPI real  → https://pypi.org/project/cleanboost/
+#   * TestPyPI   → https://test.pypi.org/project/cleanboost/

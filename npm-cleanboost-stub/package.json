@@ -1,53 +1,23 @@
 {
   "name": "cleanboost",
-  "version": "3.1.1",
-  "description": "Cyberpunk terminal-only system & gaming cache optimizer for Windows and macOS. Zero dependencies, zero telemetry, 100% offline. (Brand-canonical alias for the `cleenboost` npm package — both install names produce the same `cleanboost` binary on PATH.)",
-  "keywords": [
-    "cleanboost",
-    "cleenboost",
-    "cache",
-    "cleaner",
-    "cleanup",
-    "maintenance",
-    "utility",
-    "cli",
-    "command-line",
-    "macos",
-    "windows"
-  ],
+  "version": "3.1.2",
+  "description": "DEPRECATED placeholder. The canonical cleanboost package lives at npm-cli/ (also published as cleanboost). This stub package is no longer needed and only exists for backward-compatibility with installs that resolved it as a transient alias.",
+  "keywords": ["cleanboost", "optimizer", "deprecated"],
   "license": "MIT",
-  "author": "Freebuff",
-  "homepage": "https://github.com/Freebuff/cleanboost",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Freebuff/cleanboost.git",
-    "directory": "npm-cleanboost-stub"
-  },
-  "bugs": {
-    "url": "https://github.com/Freebuff/cleanboost/issues"
-  },
-  "os": [
-    "darwin",
-    "win32"
-  ],
-  "engines": {
-    "node": ">=18"
-  },
-  "dependencies": {
-    "cleenboost": "3.1.1"
+  "engines": {"node": ">=18"},
+  "scripts": {
+    "postinstall": "node scripts/postinstall.js"
   },
   "bin": {
-    "cleanboost": "./bin/cleanboost.js",
-    "cleanboost-cli": "./bin/cleanboost.js",
-    "cb": "./bin/cleanboost.js"
-  },
-  "scripts": {
-    "postinstall": "node ./scripts/postinstall.js"
+    "cleanboost":      "./bin/cleanboost.js",
+    "cleanboost-cli":  "./bin/cleanboost.js",
+    "cb":              "./bin/cleanboost.js"
   },
   "files": [
-    "bin/",
-    "scripts/",
+    "bin/cleanboost.js",
+    "scripts/postinstall.js",
     "README.md",
     "LICENSE"
-  ]
+  ],
+  "dependencies": {}
 }

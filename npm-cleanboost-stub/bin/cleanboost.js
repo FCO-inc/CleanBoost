@@ -1,55 +1,54 @@
 #!/usr/bin/env node
 'use strict';
 
-/**
- * cleanboost stub — brand-canonical alias for the `cleenboost` npm package.
- *
- * This file is the shim that npm symlinks from <prefix>/bin/cleanboost when
- * the user runs `npm install -g cleanboost`. It forwards every CLI
- * invocation to the real implementation, which lives in the `cleenboost`
- * package's bin script (declared as a runtime dependency in package.json).
- *
- * Why not a copy of the real script?
- *   npm only symlinks bins from top-level globally-installed packages, NOT
- *   from their dependencies. By declaring `bin` here AND listing
- *   `cleenboost` as a dependency, we guarantee:
- *     - `cleanboost` shows up on the user's PATH from THIS package, so
- *       `npm install -g cleanboost` ends with a working CLI even when the
- *       legacy `cleenboost` package was never installed directly.
- *     - The actual code lives in one place (`cleenboost/bin/cleanboost.js`)
- *       and is reused via Node's require resolver — no logic duplication.
- *
- * Defensive: if `cleenboost` is somehow not resolvable (broken install,
- * offline registry race, etc.), we print a clear actionable error and
- * exit non-zero so npm surfaces the failure instead of silently failing.
- */
+// DEPRECATED redirect stub.
+// Originally this package acted as a brand alias for a separately-published
+// real implementation. After consolidating all packages under one canonical
+// name, this stub has no remaining functional role. It now transparently
+// forwards execution to whichever `cleanboost` binary wins on PATH (likely
+// the real package installed elsewhere on the system).
+//
+// Behavior:
+//   - If a real `cleanboost` binary exists elsewhere on PATH AND is NOT this
+//     very script (different realpath), exec it transparently.
+//   - Otherwise print a friendly message explaining the deprecation.
 
-let realBin;
-try {
-  // Resolve through the stub's local node_modules — that's where npm puts
-  // the `cleenboost` dependency declared in package.json above.
-  realBin = require.resolve('cleenboost/bin/cleanboost.js');
-} catch (_e) {
-  process.stderr.write(
-    '[cleanboost] stub package failed to locate the underlying `cleenboost` package.\n' +
-    '[cleanboost] This usually means npm could not download the dependency\n' +
-    '[cleanboost] (network offline, registry blocked, or a corrupted install).\n' +
-    '[cleanboost]\n' +
-    '[cleanboost] To recover, run:\n' +
-    '[cleanboost]   npm install -g cleenboost --force\n' +
-    '[cleanboost] or:\n' +
-    '[cleanboost]   npm install -g cleanboost --force\n' +
-    '[cleanboost]\n' +
-    '[cleanboost] If the problem persists, open an issue at\n' +
-    '[cleanboost]   https://github.com/Freebuff/cleanboost/issues\n'
-  );
-  process.exit(1);
+const fs = require('fs');
+const path = require('path');
+const { execFileSync } = require('child_process');
+
+function findRealCleanboost() {
+  const PATH = (process.env.PATH || '').split(path.delimiter);
+  for (const dir of PATH) {
+    if (!dir) continue;
+    const candidate = path.join(dir, 'cleanboost');
+    if (!fs.existsSync(candidate)) continue;
+    let real;
+    try { real = fs.realpathSync(candidate); } catch { continue; }
+    let self;
+    try { self = fs.realpathSync(__filename); } catch { self = __filename; }
+    if (real === self) continue;
+    return candidate;
+  }
+  return null;
 }
 
-// `require()` of the real bin script executes it: cleenboost's bin is a
-// Node entry point that locates the prebuilt Python binary in
-// ~/.cleanboost/bin/ and execs it with our argv. No state, no callback —
-// either it succeeds (process exits via the exec'd binary) or it throws,
-// which Node will surface as an uncaught exception with the real script's
-// own error messages. Clean delegation.
-require(realBin);
+const real = findRealCleanboost();
+if (real) {
+  // Forward transparently to the real cleanboost binary.
+  try {
+    execFileSync(real, process.argv.slice(2), { stdio: 'inherit' });
+    process.exit(0);
+  } catch (e) {
+    if (typeof e.status === 'number') process.exit(e.status);
+    process.exit(1);
+  }
+}
+
+process.stderr.write(
+  'cleanboost@3.1.1 (DEPRECATED stub): the canonical cleanboost package now installs\n' +
+  'itself as `cleanboost`. This placeholder is no longer required. To install the\n' +
+  'real CLI: `npm install -g cleanboost@latest` and ensure your PATH includes the\n' +
+  'npm bin prefix.\n'
+);
+process.exit(0);

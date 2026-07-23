@@ -155,6 +155,18 @@ async function main() {
     log(`installed binary at ${finalBin}`);
     log(`verify with: cleanboost --version`);
   } catch (err) {
+    // Graceful degradation: when the canonical GitHub Release for v${VER} does
+    // not exist yet (HTTP 404), npm install should NOT fail — the package was
+    // published successfully. Inform the user of the missing binary and point
+    // to the pip fallback so `cleanboost` is still usable for them.
+    if (/^HTTP 404\b/.test(err && err.message || '')) {
+      log(`Note: no prebuilt binary yet at ${url}  (release v${VER} pending).`);
+      log(`npm install completed — but \`cleanboost\` will not run until the binary downloads.`);
+      log(`Workaround:  pip install --user cleanboost  (only if that package is published to PyPI)`);
+      log(`Or wait for the GitHub Actions release tag to publish the asset.`);
+      log(`Tracking:    https://github.com/${REPO}/releases/tag/v${VER}`);
+      process.exit(0);
+    }
     // Clean, actionable error message; no leaked stack trace unless debugging.
     const DEBUG = process.env.CLEANBOOST_DEBUG ? err.stack : null;
     die(`Installation failed: ${err.message}\n` +

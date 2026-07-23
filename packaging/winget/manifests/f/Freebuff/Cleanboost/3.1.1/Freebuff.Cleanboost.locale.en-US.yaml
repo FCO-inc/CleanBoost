@@ -1,4 +1,4 @@
-PackageIdentifier: Freebuff.Cleenboost
+PackageIdentifier: FCO-inc.Cleanboost
 PackageVersion: 3.1.1
 PackageLocale: en-US
 ManifestType: defaultLocale
@@ -23,8 +23,8 @@ Description: |-
   Ships as a single binary on each platform (PyInstaller). Includes a one-shot
   cleaner (`cleanboost`) and an explicit opt-in weekly maintenance daemon.
   Zero runtime dependencies: only the Python standard library. MIT-licensed and
-  audited at github.com/Freebuff/cleanboost.
-Moniker: cleenboost
+  audited at github.com/FCO-inc/CleanBoost.
+Moniker: cleanboost
 Tags:
   - command-line
   - cache

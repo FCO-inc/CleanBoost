@@ -1,40 +1,43 @@
 #!/usr/bin/env python3
 """
-CLEANBOOST v3 ─ Cyberpunk System & Gaming Optimizer (Terminal Edition)
+CLEANBOOST v3 ─ Fast & Simple Terminal Optimizer
 ======================================================================
-Aplicación de TERMINAL para Windows y macOS que:
-  · Detecta especificaciones del sistema (CPU, RAM, GPU, disco).
-  · Escanea bibliotecas de juegos instaladas (Steam, Epic, Battle.net,
-    GOG, Minecraft, Roblox) y permite optimizar sus cachés.
-  · Limpia papelera de reciclaje, archivos temporales y caché de sistema.
-  · Limpia cachés de shaders (DirectX, NVIDIA, AMD) para mejorar
-    rendimiento en juegos.
-  · Muestra tiempo de ejecución en formato MM:SS.
-  · Modo daemon opcional con aviso semanal (cleanboost --enable-daemon).
+CleanBoost is software that runs in the terminal: fast, simple, 100% free.
+It detects system specs and installed games (Steam, Epic, Battle.net, GOG,
+Minecraft, Roblox), and cleans caches that slow down your PC.
 
-Requisitos:
+Runs on:
+  · macOS, Windows.
+  · Detects CPU, RAM, GPU, disk specs.
+  · Detects installed games and lets you optimize their caches.
+  · Cleans recycle bin, temp files, system cache.
+  · Clears shader caches (DirectX, NVIDIA, AMD on Windows; Steam shadercache
+    on macOS) for faster game loads.
+  · Shows execution time in MM:SS format.
+  · Optional daemon mode with weekly reminder (cleanboost --enable-daemon).
+
+Requirements:
     Python 3.8+.
-    Sin dependencias externas (sólo librería estándar).
-Uso:
-    python main.py                       # menú interactivo 3 botones
-    python main.py --enable-daemon       # activa avisos semanales
-    python main.py --disable-daemon      # desactiva el daemon
-    cleanboost --quick                   # equivalent tras instalar via pip
-Compatibilidad: Windows y macOS.
+    Zero external dependencies (only the Python standard library).
+Usage:
+    python main.py                       # Interactive 3-button menu
+    python main.py --enable-daemon       # Enable weekly reminders
+    python main.py --disable-daemon      # Disable the daemon
+    cleanboost --quick                   # Equivalent after pip install
+Compatibility: Windows and macOS.
 
-Nota sobre Linux
-----------------
-Linux se ha excluido del soporte oficial: la mayoría de las distribuciones
-gestionan de forma nativa sus cachés, papelera y temporales de un modo que
-hace innecesaria una utilidad de este tipo. Si se ejecuta ``python main.py``
-en Linux, la aplicación imprime un mensaje informativo y termina con código
-de salida 0.
+A note on Linux
+---------------
+Linux is not officially supported: most distributions manage caches,
+temp files and the recycle bin natively, making this kind of utility
+unnecessary. If you run ``python main.py`` on Linux, the app prints an
+informational message and exits with code 0.
 
-Línea ética
------------
-CleanBoost optimiza cachés legítimos de juegos instalados. NO se distribuye
-soporte para launchers pirateados (warez). Esta línea no es una feature
-diferida: es una renuncia explícita.
+Ethical line
+------------
+CleanBoost optimizes legitimate caches of installed games. It does NOT
+distribute support for pirated launchers (warez). This is not a deferred
+feature: it is an explicit renunciation.
 """
 
 from __future__ import annotations
@@ -56,7 +59,7 @@ from typing import Optional
 import daemon
 
 # Versión expuesta para `cleanboost --version`.
-__version__ = "3.1.1"
+__version__ = "3.1.2"
 
 
 # ============================================================================
@@ -379,10 +382,10 @@ def ansi(text, *codes):
     return f"\033[{';'.join(str(c) for c in codes)}m{text}\033[0m"
 
 
-# Tema cyberpunk AMARILLO mapeado a códigos 256-color.
-# Acento visual #FFE600 — pretendemos el mismo feeling neón que el verde
-# de la versión previa, pero en amarillo (alineado a la marca FREEBUFF).
-# 220 = "Bright Gold/Yellow" (256-color estándar, sin depender de TrueColor).
+# Tema principal (blanco/azul/verde/gris) mapeado a códigos 256-color.
+# Esquema simple, 4 colores, sin gradientes ni animaciones: pensado para
+# máxima legibilidad en terminales de cualquier fondo. El verde marca
+# éxito funcional; el azul marca avisos; el gris marca descripciones.
 _THEME = {
     # Tema unificado blanco. Solo 4 colores en uso real:
     #   white  -> banners, headers, valores, botones, labels, progress messages, menu aux.
@@ -782,7 +785,7 @@ class _PhaseTracker:
 
 
 # ============================================================================
-# INTERFAZ DE TERMINAL — WINDOWS / macOS (CYBERPUNK TUI)
+# INTERFAZ DE TERMINAL — WINDOWS / macOS (TUI)
 # ============================================================================
 # Esta es la ÚNICA interfaz disponible. Soporte Linux eliminado: las
 # distribuciones Linux gestionan sus cachés de forma nativa, por lo que
@@ -1278,7 +1281,7 @@ def _build_arg_parser() -> argparse.ArgumentParser:
     """
     p = argparse.ArgumentParser(
         prog="cleanboost",
-        description="Cyberpunk system & gaming optimizer (terminal-only).",
+        description="CleanBoost is fast, simple, 100% free terminal software that optimizes your system and detects games.",
         add_help=True,
     )
     p.add_argument("--version", action="store_true",
