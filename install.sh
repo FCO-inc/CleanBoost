@@ -240,15 +240,34 @@ echo "${GREEN}║   ✓ Done! cleanboost ${VERSION} is installed.              �
 echo "${GREEN}║                                                            ║${RESET}"
 echo "${GREEN}╚════════════════════════════════════════════════════════════╝${RESET}"
 echo ""
-echo "Try it now:"
-echo ""
-echo "    ${BOLD}cleanboost --version${RESET}    (check it works)"
-echo "    ${BOLD}cleanboost --quick${RESET}       (auto-detect + clean in one shot)"
-echo "    ${BOLD}cleanboost${RESET}               (interactive 3-button menu)"
-echo ""
+# Show run instructions only if cleanboost is already on PATH
+if command -v cleanboost >/dev/null 2>&1; then
+    echo "Try it now:"
+    echo ""
+    echo "    ${BOLD}cleanboost --version${RESET}    (check it works)"
+    echo "    ${BOLD}cleanboost --quick${RESET}       (auto-detect + clean in one shot)"
+    echo "    ${BOLD}cleanboost${RESET}               (interactive 3-button menu)"
+    echo ""
+fi
 
-if [ "$CB_CMD" = "$BIN_PATH" ] && ! command -v cleanboost >/dev/null 2>&1; then
-    echo "${YELLOW}Tip:${RESET} Run once via ${BOLD}$BIN_PATH${RESET}, or add to PATH:"
-    echo "    export PATH=\"$USER_BASE/bin:\$PATH\""
+# If cleanboost is not on PATH, auto-append the bin directory to the shell
+# config file so the next Terminal session finds it without manual steps.
+if ! command -v cleanboost >/dev/null 2>&1; then
+    PATH_DIR="${USER_BASE}/bin"
+    SHELL_RC=""
+    [ -f "$HOME/.zshrc" ] && SHELL_RC="$HOME/.zshrc"
+    [ -f "$HOME/.bash_profile" ] && SHELL_RC="$HOME/.bash_profile"
+    [ -f "$HOME/.bashrc" ] && SHELL_RC="$HOME/.bashrc"
+
+    if [ -n "$SHELL_RC" ] && ! grep -qF "$PATH_DIR" "$SHELL_RC" 2>/dev/null; then
+        echo "" >> "$SHELL_RC"
+        echo "# Added by CleanBoost v${VERSION} installer" >> "$SHELL_RC"
+        echo "export PATH=\"${PATH_DIR}:\$PATH\"" >> "$SHELL_RC"
+        ok "Added ${BOLD}${PATH_DIR}${RESET} to your PATH"
+    fi
+
+    echo ""
+    echo "  Open a ${BOLD}NEW Terminal window${RESET} and run:"
+    echo "    ${BOLD}cleanboost${RESET}"
     echo ""
 fi
